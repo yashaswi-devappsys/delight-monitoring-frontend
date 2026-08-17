@@ -1,37 +1,23 @@
 import type { InternalAxiosRequestConfig } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import rsAxiosInstance from "./AxiosConfig";
-import { useUserContext } from "../context/UserContext";
+import { useAppDispatch } from "../hooks/useRedux";
+import { sessionExpired } from "../redux/slice/auth/authSlice";
 import SecureStorage from "../utils/SecureStorage";
 import { LSK_REFRESH_TOKEN, LSK_TOKEN } from "../constants/local-storage-constants";
 import { EMAIL_NOT_VERIFIED, KEY_X_AUTH_TOKEN, KEY_X_REFRESH_TOKEN, MOBILE_NOT_VERIFIED } from "../constants/api-constants";
 import { ResponseType } from "../constants/model/network";
 
-const AxiosInterceptor = ({ children }: any) => {
-    const [isInterceptorReady, setIsInterceptorReady] = useState(false);
-    // open urls to exclude headers and 401 errors
-    const OPEN_URL_LIST = [
-        "auth/login",
-        "auth/register",
-        "auth/customer/setup-password/request-otp",
-        "auth/customer/setup-password/verify",
-        "auth/customer/setup-password/resend-otp",
-        "auth/customer/login/verify-otp",
-        "auth/customer/login/resend-otp",
-        "auth/forgot-password",
-        "auth/forgot-password/request-otp",
-        "auth/forgot-password/verify",
-        "auth/forgot-password/resend-otp",
-    ];
-    const { logout } = useUserContext();
+const OPEN_URL_LIST = ["auth/login", "auth/register"];
+const AUTHENTICATE = "auth/login";
+const REFRESH_TOKEN = "auth/reissue-token";
+const LOGOUT = "auth/logout";
+const TEMP_TOKEN_URL_LIST = ["auth/register"];
+const VALIDATE_OTP = "";
 
-    const AUTHENTICATE = "auth/login";
-    const REFRESH_TOKEN = "auth/reissue-token";
-    const LOGOUT = "auth/logout";
-    const TEMP_TOKEN_URL_LIST = [
-        "auth/register",
-    ];
-    const VALIDATE_OTP = "auth/verify-otp";
+const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
+    const [isInterceptorReady, setIsInterceptorReady] = useState(false);
+    const dispatch = useAppDispatch();
 
     const handleServerError = (error: any) => {
         let message = "";
@@ -230,8 +216,9 @@ const AxiosInterceptor = ({ children }: any) => {
 
                             refreshSubscribers.forEach((subscriber) => subscriber());
                             refreshSubscribers = [];
-                        } catch (refreshError: any) {
-                            logout();
+                        } catch {
+                            SecureStorage.clearAll();
+                            dispatch(sessionExpired());
                         }
 
                         isRefreshing = false;
@@ -251,7 +238,7 @@ const AxiosInterceptor = ({ children }: any) => {
             rsAxiosInstance.interceptors.request.eject(reqInterceptor);
             rsAxiosInstance.interceptors.response.eject(resInterceptor);
         };
-    }, []);
+    }, [dispatch]);
 
     return isInterceptorReady ? children : null;
 };

@@ -1,7 +1,3 @@
-import AxiosHelper from "./AxiosHelper";
-
-
-
 const UserService = {
 
 

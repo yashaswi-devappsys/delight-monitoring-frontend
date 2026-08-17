@@ -1,10 +1,18 @@
+import { BrowserRouter } from "react-router-dom";
+import { Toaster } from "sonner";
+import AxiosInterceptor from "./network/AxiosInterceptor";
+import AppRoutes from "./routes/AppRoutes";
+
 const App = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-3xl font-bold">
-        Delight Monitoring
-      </h1>
-    </div>
+    <AxiosInterceptor>
+      <BrowserRouter>
+        <div className="min-h-screen min-w-full bg-background">
+          <AppRoutes />
+          <Toaster position="top-right" richColors closeButton />
+        </div>
+      </BrowserRouter>
+    </AxiosInterceptor>
   );
 };
 

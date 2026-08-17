@@ -1,4 +1,8 @@
 import AxiosHelper from "./AxiosHelper";
+import type {
+  AuthenticateUserRequest,
+  AuthenticateUserResponse,
+} from "../redux/slice/auth/authType";
 
 export const validatePassword = (password: string) => {
   const missing: string[] = [];
@@ -6,7 +10,7 @@ export const validatePassword = (password: string) => {
   if (password.length < 8) missing.push("at least 8 characters");
   if (!/[A-Z]/.test(password)) missing.push("one uppercase letter");
   if (!/[0-9]/.test(password)) missing.push("one number");
-  if (!/[!@#$%^&*(),.?\":{}|<>]/.test(password)) missing.push("one special character");
+  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) missing.push("one special character");
 
   if (missing.length === 0) return "";
 
@@ -14,28 +18,20 @@ export const validatePassword = (password: string) => {
 };
 
 
-const authenticateUser = async (username: string, password?: string, loginType?: string) => {
-  const body = { username, password, loginType };
+const authenticateUser = async (
+  credentials: AuthenticateUserRequest,
+): Promise<AuthenticateUserResponse> => {
+  const response = (await AxiosHelper.httpPost({
+    path: "auth/login",
+    queryParams: null,
+    body: credentials,
+  })) as AuthenticateUserResponse;
 
-  return new Promise((resolve, reject) => {
-    AxiosHelper.httpPost({
-      path: "auth/login",
-      queryParams: null,
-      body: body,
-    })
-      .then((res: any) => {
-        if (res.status === true) {
-          resolve({ ...res });
-        } else {
-          // console.warn("login failed service:", res.message);
-          reject(res.message);
-        }
-      })
-      .catch((e) => {
-        console.error("Error occurred during login:", e);
-        reject(e);
-      });
-  });
+  if (!response.status) {
+    throw new Error(response.message || "Authentication failed");
+  }
+
+  return response;
 };
 
 const changePassword = (body: {
@@ -87,11 +83,20 @@ const forgotPassword = (body: null) => {
   });
 };
 
+const logoutUser = async (): Promise<void> => {
+  await AxiosHelper.httpPost({
+    path: "auth/logout",
+    queryParams: null,
+    body: null,
+  });
+};
+
 
 const AuthService = {
   authenticateUser,
   changePassword,
-  forgotPassword
+  forgotPassword,
+  logoutUser,
 
 };
 
