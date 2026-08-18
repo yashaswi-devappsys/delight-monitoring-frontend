@@ -29,6 +29,12 @@ export const UserMenu = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const displayName = user?.name || user?.username || "User";
 
+  const handleLogout = async () => {
+    setOpen(false);
+    await dispatch(logoutUser());
+    setTheme("system");
+  };
+
   useEffect(() => {
     const closeOnOutsideClick = (event: MouseEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) setOpen(false);
@@ -113,7 +119,7 @@ export const UserMenu = () => {
             type="button"
             role="menuitem"
             className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-left text-sm text-destructive hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            onClick={() => void dispatch(logoutUser())}
+            onClick={() => void handleLogout()}
           >
             <LogOut className="size-4" /> Logout
           </button>

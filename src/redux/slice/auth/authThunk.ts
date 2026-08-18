@@ -3,6 +3,7 @@ import AuthService from "../../../network/AuthService";
 import SecureStorage from "../../../utils/SecureStorage";
 import {
   LSK_IS_LOGGED_IN,
+  LSK_FORCE_PASSWORD_CHANGE,
   LSK_REFRESH_TOKEN,
   LSK_TOKEN,
   LSK_USER_DETAILS,
@@ -26,13 +27,19 @@ export const authenticateUser = createAsyncThunk<
   try {
     const response = await AuthService.authenticateUser(credentials);
     const { token, refreshToken, userDetails } = response.data;
+    const resetPasswordRequired = Boolean(
+      response.reset_pwd_required ??
+      response.data.reset_pwd_required ??
+      userDetails.reset_pwd_required,
+    );
 
     SecureStorage.setItem(LSK_TOKEN, token);
     SecureStorage.setItem(LSK_REFRESH_TOKEN, refreshToken);
     SecureStorage.setItem(LSK_IS_LOGGED_IN, 1);
     SecureStorage.setItem(LSK_USER_DETAILS, JSON.stringify(userDetails));
+    SecureStorage.setItem(LSK_FORCE_PASSWORD_CHANGE, resetPasswordRequired);
 
-    return { ...response, data: userDetails };
+    return { ...response, data: userDetails, resetPasswordRequired };
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
   }

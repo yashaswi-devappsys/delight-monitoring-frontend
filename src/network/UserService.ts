@@ -4,6 +4,7 @@ import type {
   ChangePasswordResponse,
   CreateUserRequest,
   CreateUserResponse,
+  ResetPasswordResponse,
 } from "../redux/slice/user/userType";
 
 const changePassword = async (
@@ -43,9 +44,26 @@ const createNewUser = async (request: CreateUserRequest): Promise<CreateUserResp
   return response;
 };
 
+const resetPassword = async (
+  request: ChangePasswordRequest,
+): Promise<ResetPasswordResponse> => {
+  const response = (await rsAxiosInstance.post("users/reset-password", {
+    current_password: request.currentPassword,
+    new_password: request.newPassword,
+    confirm_password: request.confirmPassword,
+  })) as unknown as ResetPasswordResponse;
+
+  if (!response.status) {
+    throw new Error(response.message || "Unable to reset password");
+  }
+
+  return response;
+};
+
 const UserService = {
   changePassword,
   createNewUser,
+  resetPassword,
 };
 
 export default UserService;

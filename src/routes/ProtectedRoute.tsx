@@ -3,11 +3,15 @@ import { useAppSelector } from "../hooks/useRedux";
 import { ROUTE_PATHS } from "./routePaths";
 
 const ProtectedRoute = () => {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated, resetPasswordRequired } = useAppSelector((state) => state.auth);
   const location = useLocation();
 
   if (!isAuthenticated) {
     return <Navigate to={ROUTE_PATHS.login} replace state={{ from: location }} />;
+  }
+
+  if (resetPasswordRequired) {
+    return <Navigate to={ROUTE_PATHS.resetPassword} replace />;
   }
 
   return <Outlet />;

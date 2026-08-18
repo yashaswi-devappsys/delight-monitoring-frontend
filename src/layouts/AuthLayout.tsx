@@ -3,9 +3,11 @@ import { useAppSelector } from "../hooks/useRedux";
 import { ROUTE_PATHS } from "../routes/routePaths";
 
 const AuthLayout = () => {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { isAuthenticated, resetPasswordRequired } = useAppSelector((state) => state.auth);
 
-  if (isAuthenticated) return <Navigate to={ROUTE_PATHS.dashboard} replace />;
+  if (isAuthenticated) {
+    return <Navigate to={resetPasswordRequired ? ROUTE_PATHS.resetPassword : ROUTE_PATHS.dashboard} replace />;
+  }
 
   return (
     <main className="min-h-svh w-full bg-white">

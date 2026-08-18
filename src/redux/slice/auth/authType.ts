@@ -7,10 +7,12 @@ export interface AuthenticateUserRequest {
 
 export interface AuthenticateUserResponse {
   status: boolean;
+  reset_pwd_required?: boolean;
   data: {
     token: string;
     refreshToken: string;
     userDetails: TUser;
+    reset_pwd_required?: boolean;
   };
   message: string;
   errors?: unknown[];
@@ -20,6 +22,7 @@ export interface AuthenticateUserResponse {
 export interface AuthenticatedUserResult {
   status: boolean;
   data: TUser;
+  resetPasswordRequired: boolean;
   message: string;
   errors?: unknown[];
   RequestId?: string;
@@ -28,6 +31,7 @@ export interface AuthenticatedUserResult {
 export interface AuthState {
   user: TUser | null;
   isAuthenticated: boolean;
+  resetPasswordRequired: boolean;
   isLoading: boolean;
   error: string | null;
 }

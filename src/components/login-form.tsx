@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginPoster from "../assets/login-poster.jpg";
 import zeissLogo from "../assets/zeiss-logo-rgb.png";
@@ -13,6 +13,9 @@ interface LoginLocationState {
   from?: { pathname?: string };
 }
 
+const loginInputClassName =
+  "bg-white text-slate-950 caret-blue-600 placeholder:text-slate-400 dark:bg-white dark:text-slate-950 dark:placeholder:text-slate-400";
+
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -21,7 +24,7 @@ export const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const result = await dispatch(
@@ -29,6 +32,10 @@ export const LoginForm = () => {
     );
 
     if (authenticateUser.fulfilled.match(result)) {
+      if (result.payload.resetPasswordRequired) {
+        navigate(ROUTE_PATHS.resetPassword, { replace: true });
+        return;
+      }
       const state = location.state as LoginLocationState | null;
       navigate(state?.from?.pathname ?? ROUTE_PATHS.dashboard, {
         replace: true,
@@ -76,6 +83,7 @@ export const LoginForm = () => {
                 name="username"
                 autoComplete="username"
                 placeholder="Enter your username"
+                className={loginInputClassName}
                 required
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
@@ -87,7 +95,7 @@ export const LoginForm = () => {
                 <Label className="text-slate-700" htmlFor="password">Password</Label>
                 <Link
                   className="text-sm font-medium text-blue-700 hover:text-blue-800 hover:underline"
-                  to={ROUTE_PATHS.resetPassword}
+                  to={ROUTE_PATHS.forgotPassword}
                 >
                   Forgot password?
                 </Link>
@@ -98,6 +106,7 @@ export const LoginForm = () => {
                 type="password"
                 autoComplete="current-password"
                 placeholder="Enter your password"
+                className={loginInputClassName}
                 required
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -115,7 +124,7 @@ export const LoginForm = () => {
           )}
 
           <Button
-            className="mt-7 w-full font-semibold shadow-sm"
+            className="mt-7 w-full bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:ring-blue-600/25 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
             size="lg"
             type="submit"
             disabled={isLoading}

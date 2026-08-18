@@ -5,6 +5,7 @@ export interface TUser {
     email?: string;
     name?: string;
     permissions?: string[];
+    reset_pwd_required?: boolean;
    
    
 }

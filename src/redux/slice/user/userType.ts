@@ -20,9 +20,23 @@ export interface ChangePasswordResponse {
   RequestId?: string;
 }
 
+export interface ResetPasswordResponse {
+  status: boolean;
+  message: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+  };
+  errors?: Array<{ field: string; message: string; kind?: string }>;
+  RequestId?: string;
+}
+
 export type ChangePasswordField = keyof ChangePasswordRequest;
 
 export interface UserState {
+  isResettingPassword: boolean;
+  resetPasswordError: string | null;
+  resetPasswordForm: ChangePasswordRequest;
   isChangingPassword: boolean;
   changePasswordError: string | null;
   changePasswordSuccess: string | null;

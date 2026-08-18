@@ -9,6 +9,12 @@ import type {
   CreateUserRequest,
 } from "./userType";
 import { getPasswordValidationMessage } from "../../../utils/passwordValidation";
+import SecureStorage from "../../../utils/SecureStorage";
+import {
+  LSK_FORCE_PASSWORD_CHANGE,
+  LSK_REFRESH_TOKEN,
+  LSK_TOKEN,
+} from "../../../constants/local-storage-constants";
 
 const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) return error.message;
@@ -33,6 +39,31 @@ export const changePassword = createAsyncThunk<
 
     const response = await UserService.changePassword(request);
     return { message: response.message || "Password changed successfully." };
+  } catch (error) {
+    const apiError = error as Error & { data?: { message?: string } };
+    return rejectWithValue(apiError.data?.message || getErrorMessage(error));
+  }
+});
+
+export const resetPassword = createAsyncThunk<
+  ChangePasswordResult,
+  ChangePasswordRequest,
+  { rejectValue: string }
+>("user/resetPassword", async (request, { rejectWithValue }) => {
+  try {
+    if (request.newPassword !== request.confirmPassword) {
+      return rejectWithValue("New password and confirmation do not match.");
+    }
+
+    const passwordValidationMessage = getPasswordValidationMessage(request.newPassword);
+    if (passwordValidationMessage) return rejectWithValue(passwordValidationMessage);
+
+    const response = await UserService.resetPassword(request);
+    SecureStorage.setItem(LSK_TOKEN, response.data.accessToken);
+    SecureStorage.setItem(LSK_REFRESH_TOKEN, response.data.refreshToken);
+    SecureStorage.setItem(LSK_FORCE_PASSWORD_CHANGE, false);
+
+    return { message: response.message || "Password reset successfully." };
   } catch (error) {
     const apiError = error as Error & { data?: { message?: string } };
     return rejectWithValue(apiError.data?.message || getErrorMessage(error));

@@ -4,20 +4,6 @@ import type {
   AuthenticateUserResponse,
 } from "../redux/slice/auth/authType";
 
-export const validatePassword = (password: string) => {
-  const missing: string[] = [];
-
-  if (password.length < 8) missing.push("at least 8 characters");
-  if (!/[A-Z]/.test(password)) missing.push("one uppercase letter");
-  if (!/[0-9]/.test(password)) missing.push("one number");
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) missing.push("one special character");
-
-  if (missing.length === 0) return "";
-
-  return `Password must contain ${missing.join(", ")}.`;
-};
-
-
 const authenticateUser = async ({ username, password }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> => {
   const response = (await AxiosHelper.httpPost({
     path: "auth/login",

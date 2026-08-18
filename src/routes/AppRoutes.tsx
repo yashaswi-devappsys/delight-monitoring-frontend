@@ -5,6 +5,7 @@ import { useAppSelector } from "../hooks/useRedux";
 import AuthLayout from "../layouts/AuthLayout";
 import UserLayout from "../layouts/UserLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import PasswordResetRoute from "./PasswordResetRoute";
 import { ROUTE_PATHS } from "./routePaths";
 
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
@@ -49,6 +50,9 @@ const AppRoutes = () => (
   <Routes>
     <Route element={<AuthLayout />}>
       <Route path={ROUTE_PATHS.login} element={<PublicPage><LoginPage /></PublicPage>} />
+    </Route>
+
+    <Route element={<PasswordResetRoute />}>
       <Route path={ROUTE_PATHS.resetPassword} element={<PublicPage><ResetPasswordPage /></PublicPage>} />
     </Route>
 
