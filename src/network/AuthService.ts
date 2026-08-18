@@ -32,35 +32,6 @@ const authenticateUser = async ({ username, password }: AuthenticateUserRequest)
   return response;
 };
 
-const changePassword = (body: {
-  customerCode?: string;
-  oldPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-}) => {
-
-  return new Promise((resolve, reject) => {
-    AxiosHelper.httpPost({
-      path: "/auth/change-password",
-      queryParams: null,
-      body,
-    })
-      .then((res: any) => {
-        if (res.status === true) {
-          resolve(res);
-        } else {
-          // console.warn("Password change failed:", res.message);
-          reject(res.message);
-        }
-      })
-      .catch((e) => {
-        // console.error("Error occurred during password change:", e);
-        reject(e);
-      });
-  });
-};
-
-
 const forgotPassword = (body: null) => {
   return new Promise((resolve, reject) => {
     AxiosHelper.httpPost({
@@ -92,7 +63,6 @@ const logoutUser = async (): Promise<void> => {
 
 const AuthService = {
   authenticateUser,
-  changePassword,
   forgotPassword,
   logoutUser,
 

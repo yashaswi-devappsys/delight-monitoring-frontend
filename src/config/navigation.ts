@@ -11,6 +11,7 @@ import {
   Timer,
   Truck,
   UserRound,
+  UserPlus,
 } from "lucide-react";
 
 export type AppLayout = "user" | "admin";
@@ -21,6 +22,8 @@ export interface RoutePageProps {
 
 const DashboardPage = lazy(() => import("../pages/user/DashboardPage"));
 const FeaturePage = lazy(() => import("../pages/user/FeaturePage"));
+const ProfilePage = lazy(() => import("../pages/auth/ProfilePage"));
+const CreateNewUserPage = lazy(() => import("../pages/auth/CreateNewUserPage"));
 
 export interface NavigationItem {
   path: string;
@@ -46,6 +49,27 @@ export const userNavigation: NavigationItem[] = [
     layout: "user",
     showInMenu: false,
     page: DashboardPage,
+  },
+  {
+    path: "/profile",
+    menuLabel: "Profile",
+    pageTitle: "Profile",
+    breadcrumbLabel: "Profile",
+    icon: UserRound,
+    layout: "user",
+    showInMenu: false,
+    page: ProfilePage,
+  },
+  {
+    path: "/users/new",
+    menuLabel: "Create new user",
+    pageTitle: "Create new user",
+    breadcrumbLabel: "Create new user",
+    icon: UserPlus,
+    roles: [1],
+    layout: "user",
+    showInMenu: false,
+    page: CreateNewUserPage,
   },
   {
     path: "/orders",
@@ -121,16 +145,7 @@ export const userNavigation: NavigationItem[] = [
     layout: "user",
     page: FeaturePage,
   },
-  {
-    path: "/profile",
-    menuLabel: "Profile",
-    pageTitle: "Profile",
-    breadcrumbLabel: "Profile",
-    icon: UserRound,
-    layout: "user",
-    showInMenu: false,
-    page: FeaturePage,
-  },
+
 ];
 
 // Admin navigation can evolve independently while using the same app shell.

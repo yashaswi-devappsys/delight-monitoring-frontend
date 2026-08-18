@@ -15,6 +15,29 @@ const LOGOUT = "auth/logout";
 const TEMP_TOKEN_URL_LIST = ["auth/register"];
 const VALIDATE_OTP = "";
 
+const readToken = (payload: unknown, keys: string[]) => {
+    if (typeof payload === "string") return payload;
+    if (!payload || typeof payload !== "object") return undefined;
+
+    const tokenPayload = payload as Record<string, unknown>;
+    const value = keys.map((key) => tokenPayload[key]).find((item) => typeof item === "string");
+    return typeof value === "string" ? value : undefined;
+};
+
+const extractAuthTokens = (payload: unknown) => ({
+    accessToken: readToken(payload, [
+        KEY_X_AUTH_TOKEN,
+        "accessToken",
+        "AccessToken",
+        "access_token",
+    ]),
+    refreshToken: readToken(payload, [
+        KEY_X_REFRESH_TOKEN,
+        "RefreshToken",
+        "refresh_token",
+    ]),
+});
+
 const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
     const [isInterceptorReady, setIsInterceptorReady] = useState(false);
     const dispatch = useAppDispatch();
@@ -48,8 +71,11 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
-        let isRefreshing: boolean; // Track whether a token refresh is in progress
-        let refreshSubscribers: any[] = []; // Array to hold the pending API requests
+        let isRefreshing = false;
+        let refreshSubscribers: Array<{
+            resolve: (accessToken: string) => void;
+            reject: (error: unknown) => void;
+        }> = [];
 
         const reqInterceptor = rsAxiosInstance.interceptors.request.use(
             (config: InternalAxiosRequestConfig<any>) => {
@@ -111,10 +137,13 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
                             break
                         }
                         case REFRESH_TOKEN: {
-                            SecureStorage.setItem(LSK_TOKEN, data.data[KEY_X_AUTH_TOKEN])
-                            SecureStorage.setItem(LSK_REFRESH_TOKEN, data.data[KEY_X_REFRESH_TOKEN])
-
-                            delete data.data[KEY_X_AUTH_TOKEN]
+                            const refreshedTokens = extractAuthTokens(data.data);
+                            if (refreshedTokens.accessToken) {
+                                SecureStorage.setItem(LSK_TOKEN, refreshedTokens.accessToken)
+                            }
+                            if (refreshedTokens.refreshToken) {
+                                SecureStorage.setItem(LSK_REFRESH_TOKEN, refreshedTokens.refreshToken)
+                            }
                             break
                         }
                         default:
@@ -179,10 +208,14 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
                 ) {
                     originalRequest._retry = true;
 
-                    const retryOriginalRequest = new Promise((resolve) => {
-                        refreshSubscribers.push(() =>
-                            resolve(rsAxiosInstance(originalRequest))
-                        );
+                    const retryOriginalRequest = new Promise((resolve, reject) => {
+                        refreshSubscribers.push({
+                            resolve: (accessToken: string) => {
+                                originalRequest.headers["Authorization"] = `Bearer ${accessToken}`;
+                                resolve(rsAxiosInstance(originalRequest));
+                            },
+                            reject,
+                        });
                     });
 
                     if (!isRefreshing) {
@@ -195,16 +228,30 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
 
                             const refreshToken = SecureStorage.getItem(LSK_REFRESH_TOKEN);
 
-                            await rsAxiosInstance.post(REFRESH_TOKEN, null, {
+                            const refreshResponse = await rsAxiosInstance.post(REFRESH_TOKEN, null, {
                                 headers: {
                                     "X-Refresh-Token": refreshToken?.toString(),
                                 },
                             });
 
+                            const refreshData = (refreshResponse as unknown as ResponseType).data;
+                            const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+                                extractAuthTokens(refreshData);
 
-                            refreshSubscribers.forEach((subscriber) => subscriber());
+                            if (typeof newAccessToken !== "string" || !newAccessToken) {
+                                throw new Error("Token refresh response did not include an access token");
+                            }
+
+                            SecureStorage.setItem(LSK_TOKEN, newAccessToken);
+                            if (newRefreshToken) {
+                                SecureStorage.setItem(LSK_REFRESH_TOKEN, newRefreshToken);
+                            }
+
+                            refreshSubscribers.forEach((subscriber) => subscriber.resolve(newAccessToken));
                             refreshSubscribers = [];
-                        } catch {
+                        } catch (refreshError) {
+                            refreshSubscribers.forEach((subscriber) => subscriber.reject(refreshError));
+                            refreshSubscribers = [];
                             SecureStorage.clearAll();
                             dispatch(sessionExpired());
                         }

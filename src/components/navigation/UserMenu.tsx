@@ -1,4 +1,4 @@
-import { Check, ChevronDown, LogOut, Monitor, Moon, Sun, UserRound } from "lucide-react";
+import { Check, ChevronDown, LogOut, Monitor, Moon, Sun, UserPlus, UserRound } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
 import { Link } from "react-router-dom";
@@ -76,6 +76,17 @@ export const UserMenu = () => {
           >
             <UserRound className="size-4" /> Profile
           </Link>
+
+          {user?.role === 1 && (
+            <Link
+              role="menuitem"
+              to={ROUTE_PATHS.createUser}
+              className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              onClick={() => setOpen(false)}
+            >
+              <UserPlus className="size-4" /> Create new user
+            </Link>
+          )}
 
           <div className="my-1 border-y py-1" role="group" aria-label="Theme">
             <p className="px-3 py-1.5 text-xs font-medium text-muted-foreground">Theme</p>

@@ -12,5 +12,6 @@ export const ROUTE_PATHS = {
   cef: "/monitoring/cef",
   reports: "/reports",
   profile: "/profile",
+  createUser: "/users/new",
   unauthorized: "/unauthorized",
 } as const;

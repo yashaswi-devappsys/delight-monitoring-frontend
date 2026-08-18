@@ -76,12 +76,12 @@ const KpiCard = ({ item }: { item: DashboardKpiCard }) => {
   return (
     <article
       className={cn(
-        "group relative flex min-w-0 items-center gap-4 overflow-hidden rounded-xl border border-l-4 border-border bg-card p-5 text-card-foreground shadow-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md",
-        accentBorderStyles[item.accent],
+        "group relative flex min-w-0 items-center gap-3.5 overflow-hidden rounded-xl border border-l-4 border-border bg-card p-4.5 text-card-foreground shadow-sm transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md",
+        accentBorderStyles[item.accent]
       )}
     >
-      <div className={cn("grid size-12 shrink-0 place-items-center rounded-xl", accentStyles[item.accent])}>
-        <Icon className="size-5.5" aria-hidden="true" />
+      <div className={cn("grid size-11 shrink-0 place-items-center rounded-xl", accentStyles[item.accent])}>
+        <Icon className="size-5" aria-hidden="true" />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -95,7 +95,7 @@ const KpiCard = ({ item }: { item: DashboardKpiCard }) => {
             </span>
           )}
         </div>
-        <p className="mt-0.5 text-3xl font-semibold leading-none tracking-tight text-foreground">
+        <p className="mt-0.5 text-[1.75rem] font-semibold leading-none tracking-tight text-gray-700 dark:text-foreground">
           {countFormatter.format(item.count)}
         </p>
         {item.percentage !== undefined && (
@@ -109,10 +109,10 @@ const KpiCard = ({ item }: { item: DashboardKpiCard }) => {
 };
 
 const KpiGridSkeleton = () => (
-  <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-4" aria-hidden="true">
+  <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] gap-4" aria-hidden="true">
     {Array.from({ length: 8 }, (_, index) => (
-      <div key={index} className="flex items-center gap-4 rounded-xl border bg-card p-5 shadow-sm">
-        <Skeleton className="size-12 shrink-0 rounded-xl" />
+      <div key={index} className="flex items-center gap-3.5 rounded-xl border bg-card p-4.5 shadow-sm">
+        <Skeleton className="size-11 shrink-0 rounded-xl" />
         <div className="min-w-0 flex-1">
           <Skeleton className="h-4 w-32 max-w-full" />
           <Skeleton className="mt-2 h-8 w-20" />
@@ -196,7 +196,7 @@ export const LiveOrderKpiSection = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] gap-4">
           {kpis.map((item) => <KpiCard key={item.id} item={item} />)}
         </div>
       )}

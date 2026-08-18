@@ -5,13 +5,13 @@ import zeissLogo from "../assets/zeiss-logo-rgb.png";
 import { useAppDispatch, useAppSelector } from "../hooks/useRedux";
 import { authenticateUser } from "../redux/slice/auth/authThunk";
 import { ROUTE_PATHS } from "../routes/routePaths";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
 
 interface LoginLocationState {
   from?: { pathname?: string };
 }
-
-const inputClassName =
-  "h-11 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-3 focus:ring-blue-100";
 
 export const LoginForm = () => {
   const dispatch = useAppDispatch();
@@ -69,36 +69,32 @@ export const LoginForm = () => {
           </div>
 
           <div className="mt-8 space-y-5">
-            <label className="block" htmlFor="username">
-              <span className="mb-2 block text-sm font-medium text-slate-700">
-                Username
-              </span>
-              <input
+            <div>
+              <Label className="mb-2 block text-slate-700" htmlFor="username">Username</Label>
+              <Input
                 id="username"
                 name="username"
-                className={inputClassName}
                 autoComplete="username"
                 placeholder="Enter your username"
                 required
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
               />
-            </label>
+            </div>
 
-            <label className="block" htmlFor="password">
-              <span className="mb-2 flex items-center justify-between gap-4">
-                <span className="text-sm font-medium text-slate-700">Password</span>
+            <div>
+              <div className="mb-2 flex items-center justify-between gap-4">
+                <Label className="text-slate-700" htmlFor="password">Password</Label>
                 <Link
                   className="text-sm font-medium text-blue-700 hover:text-blue-800 hover:underline"
                   to={ROUTE_PATHS.resetPassword}
                 >
                   Forgot password?
                 </Link>
-              </span>
-              <input
+              </div>
+              <Input
                 id="password"
                 name="password"
-                className={inputClassName}
                 type="password"
                 autoComplete="current-password"
                 placeholder="Enter your password"
@@ -106,7 +102,7 @@ export const LoginForm = () => {
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
               />
-            </label>
+            </div>
           </div>
 
           {error && (
@@ -118,13 +114,14 @@ export const LoginForm = () => {
             </p>
           )}
 
-          <button
-            className="mt-7 flex h-11 w-full items-center justify-center rounded-lg bg-blue-700 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-200 disabled:cursor-not-allowed disabled:opacity-60"
+          <Button
+            className="mt-7 w-full font-semibold shadow-sm"
+            size="lg"
             type="submit"
             disabled={isLoading}
           >
             {isLoading ? "Signing in…" : "Sign in"}
-          </button>
+          </Button>
 
           <p className="mt-8 text-center text-xs leading-5 text-slate-400">
             Secure access for authorized users only.
