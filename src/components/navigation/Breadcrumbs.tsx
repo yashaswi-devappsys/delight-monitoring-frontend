@@ -3,15 +3,30 @@ import { Link, useLocation } from "react-router-dom";
 import type { NavigationItem } from "../../config/navigation";
 import { getBreadcrumbs } from "../../routes/navigationUtils";
 import { ROUTE_PATHS } from "../../routes/routePaths";
+import { cn } from "../../lib/utils";
 
-export const Breadcrumbs = ({ navigation }: { navigation: NavigationItem[] }) => {
+interface BreadcrumbsProps {
+  navigation: NavigationItem[];
+  collapsed?: boolean;
+}
+
+export const Breadcrumbs = ({ navigation, collapsed = false }: BreadcrumbsProps) => {
   const { pathname } = useLocation();
   const breadcrumbs = getBreadcrumbs(pathname, navigation);
 
   if (!breadcrumbs.length || pathname === ROUTE_PATHS.dashboard) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="border-b bg-background/95 px-4 sm:px-6">
+    <nav
+      aria-label="Breadcrumb"
+      aria-hidden={collapsed}
+      className={cn(
+        "max-h-10 overflow-hidden border-b bg-background/95 px-4 opacity-100 transition-[max-height,opacity,transform,border-color] duration-250 ease-out sm:px-6",
+        collapsed
+          ? "pointer-events-none max-h-0 -translate-y-2 border-transparent opacity-0"
+          : "translate-y-0 border-border",
+      )}
+    >
       <ol className="mx-auto flex h-10 max-w-screen-2xl items-center gap-1 overflow-hidden text-xs sm:text-sm">
         {breadcrumbs.map((item, index) => {
           const current = index === breadcrumbs.length - 1;

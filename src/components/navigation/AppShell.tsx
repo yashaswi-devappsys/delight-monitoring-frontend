@@ -11,22 +11,22 @@ export const AppShell = ({ navigation }: { navigation: NavigationItem[] }) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const updateScrolled = () => setScrolled(window.scrollY > 4);
+    const updateScrolled = () => setScrolled(window.scrollY > 12);
     updateScrolled();
     window.addEventListener("scroll", updateScrolled, { passive: true });
     return () => window.removeEventListener("scroll", updateScrolled);
   }, []);
 
   return (
-    <div className="min-h-screen bg-muted/40">
+    <div className="min-h-screen bg-background">
       <div
         className={cn(
-          "sticky top-0 z-40 border-b border-transparent transition-shadow duration-200",
-          scrolled && "border-border shadow-sm",
+          "sticky top-0 z-40 border-b border-transparent transition-[border-color,box-shadow,background-color] duration-250 ease-out",
+          scrolled && "border-border bg-background/90 shadow-sm backdrop-blur-md",
         )}
       >
-        <AppHeader navigation={navigation} />
-        <Breadcrumbs navigation={navigation} />
+        <AppHeader navigation={navigation} compact={scrolled} />
+        <Breadcrumbs navigation={navigation} collapsed={scrolled} />
       </div>
 
       <main className="mx-auto w-full max-w-screen-2xl p-4 sm:p-6">
