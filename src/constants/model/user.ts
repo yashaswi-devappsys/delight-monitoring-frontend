@@ -4,6 +4,7 @@ export interface TUser {
     username?: string;
     email?: string;
     name?: string;
+    permissions?: string[];
    
    
 }

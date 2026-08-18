@@ -1,12 +1,6 @@
-import { Outlet } from "react-router-dom";
+import { AppShell } from "../components/navigation/AppShell";
+import { userNavigation } from "../config/navigation";
 
-const UserLayout = () => (
-  <div className="min-h-screen bg-background">
-    <header className="border-b px-6 py-4 font-semibold">Delight Monitoring</header>
-    <main className="mx-auto w-full max-w-7xl p-6">
-      <Outlet />
-    </main>
-  </div>
-);
+const UserLayout = () => <AppShell navigation={userNavigation} />;
 
 export default UserLayout;
