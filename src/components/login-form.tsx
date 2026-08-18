@@ -37,12 +37,12 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-[0_24px_70px_-24px_rgba(30,64,175,0.35)] lg:grid lg:min-h-155 lg:grid-cols-2">
-      <div className="relative hidden min-h-155 overflow-hidden lg:block">
+    <div className="min-h-svh w-full bg-white lg:grid lg:h-svh lg:min-h-0 lg:grid-cols-[auto_minmax(28rem,1fr)] lg:overflow-hidden">
+      <div className="relative hidden h-svh max-w-[calc(100vw-28rem)] overflow-hidden bg-blue-950 lg:block">
         <img
           src={loginPoster}
           alt="Delight Monitoring workspace"
-          className="h-full w-full object-cover"
+          className="h-full w-auto max-w-full object-contain"
         />
         <div className="absolute inset-0 bg-linear-to-t from-blue-950/65 via-blue-900/10 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 hidden p-8 text-white lg:block">
@@ -55,7 +55,7 @@ export const LoginForm = () => {
         </div>
       </div>
 
-      <div className="flex items-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
+      <div className="flex min-h-svh items-center px-6 py-9 sm:px-10 sm:py-12 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:px-14">
         <form className="mx-auto w-full max-w-sm" onSubmit={handleSubmit}>
           <img src={zeissLogo} alt="ZEISS" className="h-12 w-auto" />
 

@@ -1,6 +1,5 @@
-// export const KEY_X_AUTH_TOKEN = "x-auth-token";
-export const KEY_X_AUTH_TOKEN = "AccessToken";
-export const KEY_X_REFRESH_TOKEN = "RefreshToken";
+export const KEY_X_AUTH_TOKEN = "token";
+export const KEY_X_REFRESH_TOKEN = "refreshToken";
 
 export const SUCCESS_RESPONSE = 1001;
 export const FAILURE_RESPONSE = -1;

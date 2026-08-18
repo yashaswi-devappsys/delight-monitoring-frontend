@@ -75,7 +75,7 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
                         config.headers["Content-Type"] = "application/json";
                     }
                 }
-                if (config.url === LOGOUT) {
+                if (config.url === LOGOUT && typeof refreshToken === "string") {
                     config.headers["X-Refresh-Token"] = refreshToken;
                 }
 
@@ -100,20 +100,7 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
 
                     switch (config.url) {
                         case AUTHENTICATE: {
-                            if (data.data?.[KEY_X_AUTH_TOKEN]) {
-                                SecureStorage.setItem(LSK_TOKEN, data.data[KEY_X_AUTH_TOKEN])
-                            }
-                            if (data.data?.[KEY_X_REFRESH_TOKEN]) {
-                                SecureStorage.setItem(LSK_REFRESH_TOKEN, data.data[KEY_X_REFRESH_TOKEN])
-                            }
-
-                            //set logged in
-                            // SecureStorage.setItem(LSK_IS_LOGGED_IN, true)
-
-                            if (data.data) {
-                                delete data.data[KEY_X_AUTH_TOKEN]
-                                delete data.data[KEY_X_REFRESH_TOKEN]
-                            }
+                            // The auth thunk persists login tokens and user details.
                             break
                         }
                         case VALIDATE_OTP: {
@@ -187,6 +174,7 @@ const AxiosInterceptor = ({ children }: { children: ReactNode }) => {
                     error.response.status === 401 &&
                     !originalRequest._retry &&
                     reqUrl !== REFRESH_TOKEN &&
+                    reqUrl !== LOGOUT &&
                     !OPEN_URL_LIST.includes(reqUrl)
                 ) {
                     originalRequest._retry = true;

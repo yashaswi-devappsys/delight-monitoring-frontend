@@ -18,17 +18,15 @@ export const validatePassword = (password: string) => {
 };
 
 
-const authenticateUser = async (
-  credentials: AuthenticateUserRequest,
-): Promise<AuthenticateUserResponse> => {
+const authenticateUser = async ({ username, password }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> => {
   const response = (await AxiosHelper.httpPost({
     path: "auth/login",
     queryParams: null,
-    body: credentials,
+    body: { username, password },
   })) as AuthenticateUserResponse;
 
   if (!response.status) {
-    throw new Error(response.message || "Authentication failed");
+    throw new Error(response.message || "Please Contact IT team.");
   }
 
   return response;
