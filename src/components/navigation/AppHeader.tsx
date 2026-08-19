@@ -34,7 +34,7 @@ export const AppHeader = ({ navigation, compact = false }: AppHeaderProps) => {
     <>
       <header
         className={cn(
-          "bg-background/95 px-4 backdrop-blur transition-[height,padding] duration-250 ease-out supports-backdrop-filter:bg-background/85 sm:px-6",
+          "relative z-20 bg-background/95 px-4 backdrop-blur transition-[height,padding] duration-250 ease-out supports-backdrop-filter:bg-background/85 sm:px-6",
           compact ? "h-14 py-1.5" : "h-16 py-2",
         )}
       >

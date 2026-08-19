@@ -8,11 +8,11 @@ import { LSK_REFRESH_TOKEN, LSK_TOKEN } from "../constants/local-storage-constan
 import { EMAIL_NOT_VERIFIED, KEY_X_AUTH_TOKEN, KEY_X_REFRESH_TOKEN, MOBILE_NOT_VERIFIED } from "../constants/api-constants";
 import { ResponseType } from "../constants/model/network";
 
-const OPEN_URL_LIST = ["auth/login", "auth/register"];
+const OPEN_URL_LIST = ["auth/login", "auth/forgot-password"];
 const AUTHENTICATE = "auth/login";
 const REFRESH_TOKEN = "auth/reissue-token";
 const LOGOUT = "auth/logout";
-const TEMP_TOKEN_URL_LIST = ["auth/register"];
+const TEMP_TOKEN_URL_LIST = [""];
 const VALIDATE_OTP = "";
 
 const readToken = (payload: unknown, keys: string[]) => {

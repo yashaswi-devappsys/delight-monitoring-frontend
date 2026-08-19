@@ -9,6 +9,7 @@ import PasswordResetRoute from "./PasswordResetRoute";
 import { ROUTE_PATHS } from "./routePaths";
 
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPassword"));
 const ResetPasswordPage = lazy(() => import("../pages/auth/ResetPasswordPage"));
 const NotFoundPage = lazy(() => import("../pages/errors/NotFoundPage"));
 const UnauthorizedPage = lazy(() => import("../pages/errors/UnauthorizedPage"));
@@ -50,6 +51,7 @@ const AppRoutes = () => (
   <Routes>
     <Route element={<AuthLayout />}>
       <Route path={ROUTE_PATHS.login} element={<PublicPage><LoginPage /></PublicPage>} />
+      <Route path={ROUTE_PATHS.forgotPassword} element={<PublicPage><ForgotPasswordPage /></PublicPage>} />
     </Route>
 
     <Route element={<PasswordResetRoute />}>

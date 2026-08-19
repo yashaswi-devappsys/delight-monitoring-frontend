@@ -21,7 +21,7 @@ export const Breadcrumbs = ({ navigation, collapsed = false }: BreadcrumbsProps)
       aria-label="Breadcrumb"
       aria-hidden={collapsed}
       className={cn(
-        "max-h-10 overflow-hidden border-b bg-background/95 px-4 opacity-100 transition-[max-height,opacity,transform,border-color] duration-250 ease-out sm:px-6",
+        "relative z-10 max-h-10 overflow-hidden border-b bg-background/95 px-4 opacity-100 transition-[max-height,opacity,transform,border-color] duration-250 ease-out sm:px-6",
         collapsed
           ? "pointer-events-none max-h-0 -translate-y-2 border-transparent opacity-0"
           : "translate-y-0 border-border",

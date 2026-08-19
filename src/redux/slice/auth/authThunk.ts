@@ -11,7 +11,9 @@ import {
 import type {
   AuthenticatedUserResult,
   AuthenticateUserRequest,
+  ForgotPasswordRequest,
 } from "./authType";
+import { getPasswordValidationMessage } from "../../../utils/passwordValidation";
 
 const getErrorMessage = (error: unknown) => {
   if (error instanceof Error) return error.message;
@@ -42,6 +44,31 @@ export const authenticateUser = createAsyncThunk<
     return { ...response, data: userDetails, resetPasswordRequired };
   } catch (error) {
     return rejectWithValue(getErrorMessage(error));
+  }
+});
+
+export const forgotPassword = createAsyncThunk<
+  { message: string },
+  ForgotPasswordRequest,
+  { rejectValue: string }
+>("auth/forgotPassword", async (request, { rejectWithValue }) => {
+  try {
+    if (request.newPassword !== request.confirmPassword) {
+      return rejectWithValue("New password and confirmation do not match.");
+    }
+
+    const validationMessage = getPasswordValidationMessage(request.newPassword);
+    if (validationMessage) return rejectWithValue(validationMessage);
+
+    const response = await AuthService.forgotPassword({
+      ...request,
+      name: request.name.trim(),
+      username: request.username.trim(),
+    });
+    return { message: response.message || "Password reset successfully." };
+  } catch (error) {
+    const apiError = error as Error & { data?: { message?: string } };
+    return rejectWithValue(apiError.data?.message || getErrorMessage(error));
   }
 });
 

@@ -44,7 +44,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="min-h-svh w-full bg-white lg:grid lg:h-svh lg:min-h-0 lg:grid-cols-[auto_minmax(28rem,1fr)] lg:overflow-hidden">
+    <div className="min-h-svh w-full bg-white scheme-light lg:grid lg:h-svh lg:min-h-0 lg:grid-cols-[auto_minmax(28rem,1fr)] lg:overflow-hidden">
       <div className="relative hidden h-svh max-w-[calc(100vw-28rem)] overflow-hidden bg-blue-950 lg:block">
         <img
           src={loginPoster}
@@ -94,7 +94,7 @@ export const LoginForm = () => {
               <div className="mb-2 flex items-center justify-between gap-4">
                 <Label className="text-slate-700" htmlFor="password">Password</Label>
                 <Link
-                  className="text-sm font-medium text-blue-700 hover:text-blue-800 hover:underline"
+                  className="text-sm font-medium text-blue-700 hover:text-blue-800 hover:underline dark:text-blue-700 dark:hover:text-blue-800"
                   to={ROUTE_PATHS.forgotPassword}
                 >
                   Forgot password?

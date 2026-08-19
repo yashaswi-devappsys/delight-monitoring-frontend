@@ -6,9 +6,16 @@ import {
   LSK_USER_DETAILS,
 } from "../../../constants/local-storage-constants";
 import type { TUser } from "../../../constants/model/user";
-import { authenticateUser, logoutUser } from "./authThunk";
+import { authenticateUser, forgotPassword, logoutUser } from "./authThunk";
 import { resetPassword } from "../user/userThunk";
-import type { AuthState } from "./authType";
+import type { AuthState, ForgotPasswordField } from "./authType";
+
+const emptyForgotPasswordForm = {
+  name: "",
+  username: "",
+  newPassword: "",
+  confirmPassword: "",
+};
 
 const readStoredUser = (): TUser | null => {
   const storedUser = SecureStorage.getItem(LSK_USER_DETAILS);
@@ -32,6 +39,9 @@ const initialState: AuthState = {
   resetPasswordRequired: storedLogin && storedResetRequired,
   isLoading: false,
   error: null,
+  forgotPasswordForm: { ...emptyForgotPasswordForm },
+  isResettingForgotPassword: false,
+  forgotPasswordError: null,
 };
 
 const authSlice = createSlice({
@@ -40,6 +50,18 @@ const authSlice = createSlice({
   reducers: {
     clearAuthError: (state) => {
       state.error = null;
+    },
+    updateForgotPasswordField: (
+      state,
+      action: PayloadAction<{ field: ForgotPasswordField; value: string }>,
+    ) => {
+      state.forgotPasswordForm[action.payload.field] = action.payload.value;
+      state.forgotPasswordError = null;
+    },
+    resetForgotPasswordForm: (state) => {
+      state.forgotPasswordForm = { ...emptyForgotPasswordForm };
+      state.isResettingForgotPassword = false;
+      state.forgotPasswordError = null;
     },
     setUser: (state, action: PayloadAction<TUser>) => {
       state.user = action.payload;
@@ -82,9 +104,29 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state) => {
         state.resetPasswordRequired = false;
+      })
+      .addCase(forgotPassword.pending, (state) => {
+        state.isResettingForgotPassword = true;
+        state.forgotPasswordError = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state) => {
+        state.isResettingForgotPassword = false;
+        state.forgotPasswordError = null;
+        state.forgotPasswordForm = { ...emptyForgotPasswordForm };
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.isResettingForgotPassword = false;
+        state.forgotPasswordError =
+          action.payload ?? action.error.message ?? "Unable to reset password.";
       });
   },
 });
 
-export const { clearAuthError, sessionExpired, setUser } = authSlice.actions;
+export const {
+  clearAuthError,
+  resetForgotPasswordForm,
+  sessionExpired,
+  setUser,
+  updateForgotPasswordField,
+} = authSlice.actions;
 export default authSlice.reducer;

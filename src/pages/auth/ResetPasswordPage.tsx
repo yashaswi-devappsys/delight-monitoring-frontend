@@ -46,7 +46,7 @@ const PasswordInput = ({ id, label, field, value, validationMessage, onChange }:
           type="button"
           variant="ghost"
           size="icon"
-          className="absolute inset-y-0 right-0 rounded-l-none text-slate-500 hover:text-slate-900"
+          className="absolute inset-y-0 right-0 rounded-l-none bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:bg-transparent dark:text-slate-500 dark:hover:bg-slate-100 dark:hover:text-slate-900"
           aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
           onClick={() => setVisible((current) => !current)}
         >
@@ -94,7 +94,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <main className="min-h-svh w-full bg-white lg:grid lg:h-svh lg:min-h-0 lg:grid-cols-[auto_minmax(28rem,1fr)] lg:overflow-hidden">
+    <main className="min-h-svh w-full bg-white [color-scheme:light] lg:grid lg:h-svh lg:min-h-0 lg:grid-cols-[auto_minmax(28rem,1fr)] lg:overflow-hidden">
       <div className="relative hidden h-svh max-w-[calc(100vw-28rem)] overflow-hidden bg-blue-950 lg:block">
         <img
           src={loginPoster}
@@ -117,12 +117,14 @@ const ResetPasswordPage = () => {
           <img src={zeissLogo} alt="ZEISS" className="h-12 w-auto" />
 
           <div className="mt-8">
-            <div className="grid size-10 place-items-center rounded-xl bg-blue-50 text-blue-700">
-              <KeyRound className="size-5" />
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+                Set a new password
+              </h1>
+              <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-700">
+                <KeyRound className="size-5" />
+              </div>
             </div>
-            <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950">
-              Set a new password
-            </h1>
             <p className="mt-2 text-sm leading-6 text-slate-500">
               Your temporary password must be replaced before you can continue to the dashboard.
             </p>
@@ -144,7 +146,7 @@ const ResetPasswordPage = () => {
 
             <Button
               type="submit"
-              className="w-full font-semibold shadow-sm"
+              className="w-full bg-blue-600 font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:ring-blue-600/25 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
               size="lg"
               disabled={isResettingPassword || Boolean(validationMessage)}
             >

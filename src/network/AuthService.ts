@@ -2,6 +2,8 @@ import AxiosHelper from "./AxiosHelper";
 import type {
   AuthenticateUserRequest,
   AuthenticateUserResponse,
+  ForgotPasswordRequest,
+  ForgotPasswordResponse,
 } from "../redux/slice/auth/authType";
 
 const authenticateUser = async ({ username, password }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> => {
@@ -18,24 +20,20 @@ const authenticateUser = async ({ username, password }: AuthenticateUserRequest)
   return response;
 };
 
-const forgotPassword = (body: null) => {
-  return new Promise((resolve, reject) => {
-    AxiosHelper.httpPost({
-      path: "auth/forgot-password",
-      queryParams: null,
-      body,
-    })
-      .then((res: any) => {
-        if (res.status === true) {
-          resolve(res);
-        } else {
-          reject(res.message);
-        }
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
+const forgotPassword = async (request: ForgotPasswordRequest): Promise<ForgotPasswordResponse> => {
+  const response = (await AxiosHelper.httpPost({
+    path: "auth/forgot-password",
+    queryParams: null,
+    body: {
+      name: request.name,
+      user_name: request.username,
+      new_password: request.newPassword,
+      confirm_password: request.confirmPassword,
+    },
+  })) as ForgotPasswordResponse;
+
+  if (!response.status) throw new Error(response.message || "Unable to reset password.");
+  return response;
 };
 
 const logoutUser = async (): Promise<void> => {
